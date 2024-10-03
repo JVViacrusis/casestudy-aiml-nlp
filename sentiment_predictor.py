@@ -1,53 +1,16 @@
 import numpy as np
 import pickle
 import re
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Embedding, Flatten, Dense
+from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 class SentimentPredictor:
-    def __init__(self, embedding_matrix_path, tokenizer_path, max_sequence_length=100):
-        """
-        Initializes the SentimentPredictor by loading the embedding matrix and tokenizer.
+    def __init__(self, model_path, tokenizer_path, max_sequence_length=100):
+        self.model = load_model(model_path)
 
-        Parameters:
-        - embedding_matrix_path (str): Path to the saved embedding matrix.
-        - tokenizer_path (str): Path to the saved tokenizer.
-        - max_sequence_length (int): Maximum sequence length for padding input text.
-        """
-        self.embedding_matrix = np.load(embedding_matrix_path)
-        self.max_sequence_length = max_sequence_length
-
-        # Load tokenizer
         with open(tokenizer_path, 'rb') as f:
             self.tokenizer = pickle.load(f)
-
-        # Build the prediction model
-        self.model = self._build_model()
-
-    def _build_model(self):
-        """
-        Builds the prediction model using the loaded embedding matrix.
-
-        Returns:
-        - model: Compiled Keras model for sentiment prediction.
-        """
-        vocab_size, embedding_dim = self.embedding_matrix.shape
-
-        # Build the model architecture
-        model = Sequential()
-        model.add(Embedding(input_dim=vocab_size,
-                            output_dim=embedding_dim,
-                            input_length=self.max_sequence_length,
-                            weights=[self.embedding_matrix],
-                            trainable=False))  # Freeze the embedding weights
-        model.add(Flatten())
-        model.add(Dense(1, activation='sigmoid'))
-
-        # Compile the model
-        model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-
-        return model
+        self.max_sequence_length = max_sequence_length
 
     @staticmethod
     def preprocess_text(text):
@@ -63,6 +26,25 @@ class SentimentPredictor:
         text = re.sub(r"[^A-Za-z\s]", "", text)
         text = text.lower().strip()
         return text
+
+    def preprocess_reviews(self, reviews):
+        """
+        Preprocesses a batch of reviews and converts them to padded sequences.
+
+        Parameters:
+        - reviews (list of str): List of review texts.
+
+        Returns:
+        - Padded sequences for the batch of reviews.
+        """
+        # Preprocess each review
+        cleaned_reviews = [self.preprocess_text(review) for review in reviews]
+
+        # Tokenize and pad the sequences
+        sequences = self.tokenizer.texts_to_sequences(cleaned_reviews)
+        padded_sequences = pad_sequences(sequences, maxlen=self.max_sequence_length, padding='post')
+
+        return padded_sequences
 
     def predict_sentiment(self, review_text):
         """
@@ -93,10 +75,31 @@ class SentimentPredictor:
 
         return sentiment_value, sentiment_label
 
+    def predict_batch_sentiment(self, reviews):
+        """
+        Predicts the sentiment for a batch of reviews.
+
+        Parameters:
+        - reviews (list of str): The review texts.
+
+        Returns:
+        - List of predicted sentiment labels ('positive' or 'negative').
+        """
+        # Preprocess reviews
+        padded_sequences = self.preprocess_reviews(reviews)
+
+        # Make predictions
+        predictions = self.model.predict(padded_sequences)
+
+        # Convert predictions to labels
+        predicted_labels = ['positive' if p > 0.5 else 'negative' for p in predictions]
+
+        return predicted_labels
+
 # Example usage
 if __name__ == "__main__":
     # Load the sentiment predictor with the paths to the saved files
-    predictor = SentimentPredictor(embedding_matrix_path='embedding_matrix.npy', tokenizer_path='tokenizer.pkl')
+    predictor = SentimentPredictor(model_path='sentiment_model.h5', tokenizer_path='tokenizer.pkl')
 
     # Predict the sentiment of a new review
     review = "This movie was absolutely fantastic! I loved it."
