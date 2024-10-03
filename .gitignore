@@ -165,3 +165,7 @@ cython_debug/
 embedding_matrix.npy
 tokenizer.pkl
 sentiment_model.h5
+
+#vim
+*.swp
+*.swo
