@@ -189,6 +189,6 @@ class SentimentEmbeddingTrainer:
 
 # Example usage
 if __name__ == "__main__":
-    csv_filepath = 'IMDB Dataset.csv'  # Replace with your CSV file path
+    csv_filepath = 'datasets/preprocessed/IMDB Dataset.csv'  # Replace with your CSV file path
     sentiment_trainer = SentimentEmbeddingTrainer(csv_filepath)
     sentiment_trainer.run()
