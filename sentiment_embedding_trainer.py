@@ -80,16 +80,43 @@ class SentimentEmbeddingTrainer:
         text = text.lower().strip()
         return text
 
-    def build_model(self):
-        """
-        Build and compile a simple neural network model with an Embedding layer.
 
-        Returns:
-        - model: Compiled Keras model.
-        """
+    ########################################################## 
+    #                                                        # 
+    #                   just embedding                       # 
+    #                  84.19% accuracy                       #
+    #                                                        # 
+    ########################################################## 
+    # def build_model(self):
+    #     """
+    #     Build and compile a simple neural network model with an Embedding layer.
+
+    #     Returns:
+    #     - model: Compiled Keras model.
+    #     """
+    #     model = Sequential()
+    #     model.add(Embedding(input_dim=self.max_vocab_size, output_dim=self.embedding_dim, input_length=self.max_sequence_length))
+    #     model.add(Flatten())
+    #     model.add(Dense(1, activation='sigmoid'))
+
+
+    #     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+    #     return model
+
+    ########################################################## 
+    #                                                        # 
+    #               embed plus conv1d+pooling                # 
+    #                  87.46% accuracy                       #
+    #                                                        # 
+    ########################################################## 
+    def build_model(self):
+        from tensorflow.keras.layers import Conv1D, GlobalMaxPooling1D
         model = Sequential()
-        model.add(Embedding(input_dim=self.max_vocab_size, output_dim=self.embedding_dim, input_length=self.max_sequence_length))
-        model.add(Flatten())
+        model.add(Embedding(input_dim=self.max_vocab_size, 
+                            output_dim=self.embedding_dim, 
+                            input_length=self.max_sequence_length))
+        model.add(Conv1D(filters=128, kernel_size=5, activation='relu'))
+        model.add(GlobalMaxPooling1D())
         model.add(Dense(1, activation='sigmoid'))
 
         model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
@@ -115,6 +142,8 @@ class SentimentEmbeddingTrainer:
 
         # Extract the trained embedding matrix
         self.embedding_matrix = model.layers[0].get_weights()[0]
+
+        model.save('sentiment_model.h5')
 
     def save_embedding_and_tokenizer(self, embedding_output_path='embedding_matrix.npy', tokenizer_output_path='tokenizer.pkl'):
         """
