@@ -21,5 +21,5 @@ class DataSet:
         train_size_decimal = train_size_percent / 100
         test_size_decimal = test_size_percent / 100
         return train_test_split(
-            self._X, self._y, train_size=train_size_decimal, test_size=test_size_decimal, random_state=42
+            self.get_X(), self.get_y(), train_size=train_size_decimal, test_size=test_size_decimal, random_state=42
         )
