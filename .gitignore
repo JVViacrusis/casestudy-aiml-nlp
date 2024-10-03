@@ -164,3 +164,4 @@ cython_debug/
 #NLP
 embedding_matrix.npy
 tokenizer.pkl
+sentiment_model.h5
