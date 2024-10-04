@@ -24,14 +24,19 @@ class SentimentAnalysisCNNPreProcessor:
         - data: Padded sequences of tokenized texts.
         - labels: Binary-encoded sentiment labels.
         """
+        data = SentimentAnalysisCNNPreProcessor.preprocess_sentences(
+            sentences, max_vocab_size, max_sequence_length
+        )
+        labels = SentimentAnalysisCNNPreProcessor.preprocess_labels(labels)
+        return data, labels
 
+    @staticmethod
+    def preprocess_sentences(sentences, max_vocab_size=10000, max_sequence_length=100):
         # Preprocess the text data
-        texts = [SentimentAnalysisCNNPreProcessor.preprocess_text(
-            text) for text in sentences]
-
-        # Convert labels to binary format (0 for negative, 1 for positive)
-        label_encoder = LabelEncoder()
-        labels = label_encoder.fit_transform(labels)
+        texts = [
+            SentimentAnalysisCNNPreProcessor._preprocess_text(text)
+            for text in sentences
+        ]
 
         # Tokenize the text data
         tokenizer = Tokenizer(num_words=max_vocab_size, oov_token='<OOV>')
@@ -44,10 +49,22 @@ class SentimentAnalysisCNNPreProcessor:
         data = pad_sequences(
             sequences, maxlen=max_sequence_length, padding='post', truncating='post')
 
-        return data, labels
+        return data
 
     @staticmethod
-    def preprocess_text(text):
+    def preprocess_labels(labels):
+        # Convert labels to binary format (0 for negative, 1 for positive)
+        label_encoder = LabelEncoder()
+        labels = label_encoder.fit_transform(labels)
+
+        return labels
+
+    @staticmethod
+    def split_data(data, labels, test_size) -> tuple:
+        return train_test_split(data, labels, test_size=test_size, random_state=42)
+
+    @staticmethod
+    def _preprocess_text(text):
         """
         Preprocess text by removing non-alphabetic characters and converting to lowercase.
 
@@ -78,14 +95,30 @@ class SentimentAnalysisCNN:
             y,
             epochs=10,
             batch_size=32,
-            validation_data=(X_val, y_val) if X_val and y_val else None,
+            validation_data=(X_val, y_val) if X_val.any(
+            ) and y_val.any() else None,
             callbacks=[early_stopping]
         )
 
         return self
 
-    def predict(self):
-        pass
+    def predict(self, sentences: list[str]) -> list[tuple[float, str]]:
+        word_embeddings = SentimentAnalysisCNNPreProcessor.preprocess_sentences(
+            sentences)
+
+        return self.predict_word_embeddings(word_embeddings)
+
+    def predict_word_embeddings(self, word_embeddings) -> list[tuple[float, str]]:
+        prediction_values = self.model.predict(word_embeddings)
+
+        def get_prediction_label(
+            p_value): return 'positive' if p_value > 0.5 else 'negative'
+
+        predictions = [
+            (float(p_value), get_prediction_label(p_value)) for p_value in prediction_values
+        ]
+
+        return predictions
 
     def _build_model(self):
         model = Sequential()
