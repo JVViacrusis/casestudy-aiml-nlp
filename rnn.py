@@ -1,6 +1,7 @@
 from pydoc import Helper
 
 import numpy as np
+from keras.src.layers import SimpleRNN
 from keras.src.utils import pad_sequences
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, LSTM, Dense
@@ -12,7 +13,7 @@ from helpers import DataSet
 from word_embedding import *
 
 
-class LstmModel:
+class RNNModel:
 
     def __init__(self):
         data = DataSet("IMDB Dataset.csv", "sentiment")
@@ -63,7 +64,7 @@ class LstmModel:
                             trainable=False))  # Set trainable=False to keep the embeddings static
 
         # Add LSTM layer
-        self.model.add(LSTM(128, return_sequences=False))
+        self.model.add(SimpleRNN(128, return_sequences=False))
 
         # Add Dense layer with sigmoid activation for binary sentiment output
         self.model.add(Dense(1, activation='sigmoid'))
@@ -113,5 +114,5 @@ class LstmModel:
 
 
 
-lstm = LstmModel()
-lstm.accuracy()
+rnn = RNNModel()
+rnn.accuracy()
