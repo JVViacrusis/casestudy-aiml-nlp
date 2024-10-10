@@ -3,7 +3,7 @@ from sklearn.model_selection import train_test_split
 
 
 class DataSet:
-    def __init__(self, data_set_path: str, label_name: str):
+    def __init__(self, data_set_path = "IMDB Dataset.csv", label_name = "sentiment"):
         self._X = None
         self._y = None
         self.df = pd.read_csv(data_set_path)
@@ -26,7 +26,7 @@ class DataSet:
         return self._y
 
     def get_train_test_split(
-            self, train_size_percent: int, test_size_percent: int
+            self, train_size_percent = 80, test_size_percent = 20
     ) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
         """
         Split the dataset into random split for training and test data based on specified split.
