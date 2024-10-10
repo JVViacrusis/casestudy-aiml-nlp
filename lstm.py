@@ -6,7 +6,6 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, LSTM, Dense
 from tensorflow.python.keras.models import load_model
 
-import word_embedding as word_embedding
 from tensorflow.keras.preprocessing.text import Tokenizer
 
 from helpers import DataSet
@@ -20,6 +19,8 @@ class LstmModel:
 
         # Create an LSTM model
         self.model = Sequential()
+
+        self.max_length = 30
 
         #Create the model
         word2vec_model = WordEmbeddingFactory.generate_word_2_vec_model(data.get_X()["review"], 150)
@@ -51,7 +52,7 @@ class LstmModel:
                 labels.append(0)
 
 
-        X = pad_sequences(sequences, maxlen=100, padding='post')
+        X = pad_sequences(sequences, maxlen=self.max_length, padding='post')
         y = np.array(labels)
 
 
@@ -80,8 +81,7 @@ class LstmModel:
         test_sequences = self.tokenizer.texts_to_sequences(self.test_X["review"])
 
         # Pad the test sequences to match the length used during training
-        max_length = 100  # This should be the same as used in training
-        test_padded_sequences = pad_sequences(test_sequences, maxlen=max_length, padding='post')
+        test_padded_sequences = pad_sequences(test_sequences, maxlen=self.max_length, padding='post')
 
         # Convert y_test (sentiments) to a list of 0s and 1s
         y_test = []
