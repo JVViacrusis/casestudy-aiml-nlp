@@ -5,8 +5,6 @@ import numpy as np
 import nltk
 import ssl
 
-# Download required nltk packages
-
 
 class WordEmbeddingFactory:
     @staticmethod
@@ -45,6 +43,7 @@ class WordEmbeddingFactory:
 
     @staticmethod
     def _get_tokenized_sentences(corpus: list[str]):
+        # Fix SSL certificate issue for nltk
         try:
             _create_unverified_https_context = ssl._create_unverified_context
         except AttributeError:
@@ -52,6 +51,7 @@ class WordEmbeddingFactory:
         else:
             ssl._create_default_https_context = _create_unverified_https_context
 
+        # Download required nltk packages
         nltk.download('punkt_tab')
         nltk.download('punkt')
         nltk.download('stopwords')
