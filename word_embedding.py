@@ -3,6 +3,9 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 import numpy as np
 import nltk
+import ssl
+
+# Download required nltk packages
 
 
 class WordEmbeddingFactory:
@@ -42,9 +45,15 @@ class WordEmbeddingFactory:
 
     @staticmethod
     def _get_tokenized_sentences(corpus: list[str]):
-        # Download required nltk packages
-        nltk.download('punkt')
+        try:
+            _create_unverified_https_context = ssl._create_unverified_context
+        except AttributeError:
+            pass
+        else:
+            ssl._create_default_https_context = _create_unverified_https_context
+
         nltk.download('punkt_tab')
+        nltk.download('punkt')
         nltk.download('stopwords')
 
         # Tokenize sentences
@@ -58,3 +67,13 @@ class WordEmbeddingFactory:
         ]
 
         return tokenized_sentences
+
+
+class WordEmbeddingHelper:
+    @staticmethod
+    def export_model_to_file(model, file_path):
+        model.save(file_path)
+
+    @staticmethod
+    def load_model_from_file(file_path) -> Word2Vec:
+        return Word2Vec.load(file_path)
