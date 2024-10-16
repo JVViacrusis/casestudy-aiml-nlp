@@ -39,7 +39,7 @@ def determine_sentiment(sentence, avg_positive, avg_negative, model):
 
 def main():
     # Load Word2Vec model
-    file="./word2vec_model.model"
+    file = "./word2vec_model.model"
     model = WordEmbeddingHelper.load_model_from_file(file)
 
     # Define Positive and Negative Word Lists
