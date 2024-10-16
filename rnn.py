@@ -16,7 +16,7 @@ from word_embedding import *
 class RNNModel:
 
     def __init__(self):
-        data = DataSet("IMDB Dataset.csv", "sentiment")
+        data = DataSet()
 
         # Create an LSTM model
         self.model = Sequential()
@@ -27,7 +27,7 @@ class RNNModel:
         word2vec_model = WordEmbeddingFactory.generate_word_2_vec_model(data.get_X()["review"], 150)
 
 
-        train_X, self.test_X, train_y, self.test_y = data.get_train_test_split(60, 40)
+        train_X, self.test_X, train_y, self.test_y = data.get_train_test_split()
 
         # Create a word to index dictionary
         vocab_size = len(word2vec_model.wv.key_to_index)
