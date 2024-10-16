@@ -34,13 +34,11 @@ def determine_sentiment(sentence, avg_positive, avg_negative, model):
     positive_similarity = cosine_similarity(sentence_vector, avg_positive)
     negative_similarity = cosine_similarity(sentence_vector, avg_negative)
 
-    # Use a threshold of 0.2 to determine the sentiment
-    threshold = 0.05
-    net_similarity = np.absolute(positive_similarity - negative_similarity)
+    net_similarity = positive_similarity - negative_similarity
 
-    if positive_similarity - negative_similarity > threshold:
+    if positive_similarity > negative_similarity:
         return "Positive", net_similarity
-    elif negative_similarity - positive_similarity > threshold:
+    elif negative_similarity > positive_similarity:
         return "Negative", net_similarity
     else:
         return "Neutral", net_similarity
@@ -56,7 +54,41 @@ def generate_model():
 
 
 def get_model_accuracy():
-    pass
+    dataset = DataSet("IMDB Dataset.csv")
+    X_train, X_test, y_train, y_test = dataset.get_train_test_split(
+        train_size_percent=70, 
+        test_size_percent=30
+    )
+
+    corpus = X_train.values.flatten().tolist()
+    vector_dimensionality = 100
+    # Load Word2Vec model (or generate it if not already done)
+    model = WordEmbeddingFactory.generate_word_2_vec_model(corpus, vector_dimensionality)
+    WordEmbeddingHelper.export_model_to_file(model, MODEL_FILE)  # Optionally save the model for later use
+
+    # Define Positive and Negative Word Lists
+    positive_words = ['good', 'great', 'fantastic', 'love', 'excellent', 'amazing']
+    negative_words = ['bad', 'terrible', 'hate', 'awful', 'worst', 'horrible']
+
+    # Calculate Average Vectors for Positive and Negative Words
+    avg_positive_vector = get_average_vector(positive_words, model)
+    avg_negative_vector = get_average_vector(negative_words, model)
+
+    # Initialize a counter for correct predictions
+    correct_predictions = 0
+
+    # Loop through each sentence in the testing set
+    for sentence, actual_sentiment in zip(X_test['review'], y_test):
+        predicted_sentiment, _ = determine_sentiment(sentence, avg_positive_vector, avg_negative_vector, model)
+
+        # Check if prediction matches actual label
+        if predicted_sentiment.lower() == actual_sentiment.lower():
+            correct_predictions += 1
+
+    # Calculate accuracy
+    accuracy = correct_predictions / len(y_test) * 100
+    print(f"Model Accuracy: {accuracy:.2f}%")
+
 
 def predict_using_model(input_sentence: str):
     # Load Word2Vec model
@@ -66,7 +98,9 @@ def predict_using_model(input_sentence: str):
     # Define Positive and Negative Word Lists
     positive_words = ['good', 'great', 'fantastic',
                       'love', 'excellent', 'amazing']
+    # positive_words = ['good']
     negative_words = ['bad', 'terrible', 'hate', 'awful', 'worst', 'horrible']
+    # negative_words = ['bad']
 
     # Calculate Average Vectors for Positive and Negative Words
     avg_positive_vector = get_average_vector(positive_words, model)
@@ -77,9 +111,10 @@ def predict_using_model(input_sentence: str):
     print(f"Sentence: '{input_sentence}' - Sentiment: {sentiment[0]} (Net Similarity: {sentiment[1]})")
 
 def main():
-    # generate_model()
+    # get_model_accuracy()
 
-    sentence = "I like cheesecake. This movie terrible."
+    # "good bad" vs "bad good"
+    sentence = "this is a fantastic movie"
     predict_using_model(sentence)
 
 if __name__ == "__main__":
