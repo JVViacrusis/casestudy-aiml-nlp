@@ -114,9 +114,12 @@ def predict_using_model(input_sentence: str):
 def main():
     # get_model_accuracy()
 
-    # "I feel good this movie is bad" vs "I feel bad this movie is good"
-    sentence = "I feel good this movie is bad"
-    predict_using_model(sentence)
+    # this movie is good i feel bad
+    # vs
+    # this movie is bad i feel good
+    while True:
+        sentence = input("Enter sentence: ")
+        predict_using_model(sentence)
 
 if __name__ == "__main__":
     main()

@@ -122,7 +122,11 @@ class LstmModel:
 
 
 lstm = LstmModel()
-lstm.accuracy()
+# lstm.accuracy()
+
+# this movie is good i feel bad
+# vs
+# this movie is bad i feel good
 
 while True:
     sentence = [input("Enter sentence: ")]
