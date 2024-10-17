@@ -15,8 +15,9 @@ class WordEmbeddingFactory:
         return WordEmbeddingFactory.generate_embedding_matrix(model, word_vector_dimensionality)
 
     @staticmethod
-    def generate_word_2_vec_model(corpus, word_vector_dimensionality, window=5, min_count=1, worker_threads=4):
-        tokenized_sentences = WordEmbeddingFactory._get_tokenized_sentences(corpus)
+    def generate_word_2_vec_model(corpus, word_vector_dimensionality, window=5, min_count=1, worker_threads=4) -> Word2Vec:
+        tokenized_sentences = WordEmbeddingFactory._get_tokenized_sentences(
+            corpus)
         model = Word2Vec(
             tokenized_sentences,
             vector_size=word_vector_dimensionality,
@@ -57,7 +58,8 @@ class WordEmbeddingFactory:
         nltk.download('stopwords')
 
         # Tokenize sentences
-        tokenized_sentences = [word_tokenize(sentence.lower()) for sentence in corpus]
+        tokenized_sentences = [word_tokenize(
+            sentence.lower()) for sentence in corpus]
 
         # Remove stop words
         stop_words = set(stopwords.words('english'))
@@ -76,4 +78,5 @@ class WordEmbeddingHelper:
 
     @staticmethod
     def load_model_from_file(file_path) -> Word2Vec:
+        print('model-file', file_path)
         return Word2Vec.load(file_path)
