@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9976423e-c59e-4f7d-81e5-19d98e9c979d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/word_embedding_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/word_embedding_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lstm.py" beforeDir="false" afterPath="$PROJECT_DIR$/lstm.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,7 +100,8 @@
       <workItem from="1728587515363" duration="3665000" />
       <workItem from="1728598171008" duration="671000" />
       <workItem from="1729107178057" duration="285000" />
-      <workItem from="1729107480196" duration="232000" />
+      <workItem from="1729107480196" duration="4871000" />
+      <workItem from="1729130162905" duration="5726000" />
     </task>
     <servers />
   </component>
@@ -110,8 +112,9 @@
     <SUITE FILE_PATH="coverage/rnn_py$rnn.coverage" NAME="rnn Coverage Results" MODIFIED="1728587517951" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/rnn_py$rnn2.coverage" NAME="rnn2 Coverage Results" MODIFIED="1728588753867" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/rnn_py$lstm.coverage" NAME="lstm Coverage Results" MODIFIED="1728589212217" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/word_embedding_main_py$word_embedding_main.coverage" NAME="word_embedding_main Coverage Results" MODIFIED="1729107643704" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/word_embedding_main_py$word_embedding_main.coverage" NAME="word_embedding_main Coverage Results" MODIFIED="1729130210711" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/lstm_py$lstm.coverage" NAME="lstm Coverage Results" MODIFIED="1728586414966" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/lstm_py$rnn.coverage" NAME="rnn Coverage Results" MODIFIED="1728586335515" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/word_embedding_main_py$lstm.coverage" NAME="lstm Coverage Results" MODIFIED="1729134055547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

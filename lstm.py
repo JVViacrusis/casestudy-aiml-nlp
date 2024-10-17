@@ -4,7 +4,7 @@ import numpy as np
 from keras.src.utils import pad_sequences
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, LSTM, Dense
-from tensorflow.python.keras.models import load_model
+from tensorflow.keras.models import load_model
 
 from tensorflow.keras.preprocessing.text import Tokenizer
 
@@ -43,36 +43,43 @@ class LstmModel:
         self.tokenizer.word_index = word_index
         sequences = self.tokenizer.texts_to_sequences(train_X["review"])
 
-        #turn negatives and positives to numbers
-        labels = []
-        for sentiment in train_y:
-            if "positive" in sentiment:
-                labels.append(1)
-            elif "negative" in sentiment:
-                labels.append(0)
+        try:
+            self.model = load_model('./lstm.keras')
+        except ValueError:
+
+            #turn negatives and positives to numbers
+            labels = []
+            for sentiment in train_y:
+                if "positive" in sentiment:
+                    labels.append(1)
+                elif "negative" in sentiment:
+                    labels.append(0)
 
 
-        X = pad_sequences(sequences, maxlen=self.max_length, padding='post')
-        y = np.array(labels)
+            X = pad_sequences(sequences, maxlen=self.max_length, padding='post')
+            y = np.array(labels)
 
 
-        # Add embedding layer, using pre-trained word embeddings from Word2Vec
-        self.model.add(Embedding(input_dim=vocab_size,
-                            output_dim=embedding_dim,
-                            weights=[embedding_matrix],
-                            trainable=False))  # Set trainable=False to keep the embeddings static
+            # Add embedding layer, using pre-trained word embeddings from Word2Vec
+            self.model.add(Embedding(input_dim=vocab_size,
+                                output_dim=embedding_dim,
+                                weights=[embedding_matrix],
+                                trainable=False))
 
-        # Add LSTM layer
-        self.model.add(LSTM(128, return_sequences=False))
+            # Add LSTM layer
+            self.model.add(LSTM(128, return_sequences=False))
 
-        # Add Dense layer with sigmoid activation for binary sentiment output
-        self.model.add(Dense(1, activation='sigmoid'))
+            # Add Dense layer with sigmoid activation for binary sentiment output
+            self.model.add(Dense(1, activation='sigmoid'))
 
-        # Compile the model
-        self.model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+            # Compile the model
+            self.model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-        # Train the model
-        self.model.fit(X, y, epochs=10, batch_size=2)
+            # Train the model
+            self.model.fit(X, y, epochs=10, batch_size=2)
+
+            #Save the model
+            self.model.save('lstm.keras')
 
 
 
@@ -104,14 +111,20 @@ class LstmModel:
         # Test data
         new_sentences = sentence
         new_sequences = self.tokenizer.texts_to_sequences(new_sentences)
-        new_padded_sequences = pad_sequences(new_sequences, maxlen=10, padding='post')
+        new_padded_sequences = pad_sequences(new_sequences, maxlen=self.max_length, padding='post')
         predictions = self.model.predict(new_padded_sequences)
         # Threshold the predictions: Anything above 0.5 is class '1', otherwise class '0'
         predicted_classes = (predictions > 0.5).astype("int32")
 
         print([f"Predicted: {'Negative' if predict == 0 else 'Positive'}" for predict in predicted_classes])
+        print(f" Class: {predictions[0]}")
 
 
 
 lstm = LstmModel()
 lstm.accuracy()
+
+while True:
+    sentence = [input("Enter sentence: ")]
+
+    lstm.test(sentence)
