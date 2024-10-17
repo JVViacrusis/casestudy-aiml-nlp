@@ -78,5 +78,4 @@ class WordEmbeddingHelper:
 
     @staticmethod
     def load_model_from_file(file_path) -> Word2Vec:
-        print('model-file', file_path)
         return Word2Vec.load(file_path)

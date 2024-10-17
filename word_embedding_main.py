@@ -108,13 +108,14 @@ def predict_using_model(input_sentence: str):
 
     # Analyzing Sentences
     sentiment = determine_sentiment(input_sentence, avg_positive_vector, avg_negative_vector, model)
-    print(f"Sentence: '{input_sentence}' - Sentiment: {sentiment[0]} (Net Similarity: {sentiment[1]})")
+    print(f"Sentence: '{input_sentence}'")
+    print(f"Sentiment: {sentiment[0]} (Net Similarity: {sentiment[1]})")
 
 def main():
     # get_model_accuracy()
 
-    # "good bad" vs "bad good"
-    sentence = "this is a fantastic movie"
+    # "I feel good this movie is bad" vs "I feel bad this movie is good"
+    sentence = "I feel good this movie is bad"
     predict_using_model(sentence)
 
 if __name__ == "__main__":
